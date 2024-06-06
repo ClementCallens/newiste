@@ -23,11 +23,13 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-      - name: Add host to known_hosts
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
+      - name: Add known hosts manually
         run: |
-          ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+          echo "$(ssh-keyscan ${{ secrets.SSH_HOST }})" >> ~/.ssh/known_hosts
+
+      - name: Verify known hosts
+        run: |
+          cat ~/.ssh/known_hosts
 
       - name: Test SSH connection
         env:
