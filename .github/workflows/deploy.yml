@@ -20,10 +20,11 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
 
-      - name: Add known hosts
-        env:
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-        run: ssh-keyscan -p 65002 $SSH_HOST >> ~/.ssh/known_hosts
+      - name: Manually add host keys to known_hosts
+        run: |
+          echo "[213.130.145.99]:65002 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBDdnHBvmUtwkaboUl89LMtx4vzpqy6zS8hHZFYEZBMATn1bcVoXIuDNAGJmyW6dl5FopYmFdAbSbbvAkJ3yNQuo=" >> ~/.ssh/known_hosts
+          echo "[213.130.145.99]:65002 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDQ/RcVgP+pNa7LwCBXIWCRepaTJqW6PQ89A3z1KoCAZcIkBxCLqKBILFziIYl/0ElDNqsHIiTYh8olIQAsmUZe72pBL8iiz1x478StGIj/JYflYQ3R4Ua5Z6utaNkc6bR+ZnE3x07+tMJwiMcqSSTpgibky87OrkiHlBiwcvMgmMejxipHDomm9mw926rQgCfYf+l3X6VwX2mikf1d3zowJ9LJR3pO88PPAtqc2nA5+X0xChuUeGvPmOSHrNAgHvGn8lq1eWYEBVYi62ZzbfM3qaPy05+iSTtNQIFUf3Y5YsTlr6pBjYQaNUkNu1p5UQR939jZpCsHkAbJdt9JggeHOLLPPWJehiYvFUm5hXVMkMgAv1YkihS4ovfm3GtbLXYQosVktn8UeXCViROUvzNya6xv43RBhj61FHuOUIYmxJcYOhlTLQheh592QTVGNapnbVDDLOp+3otONg6YTvzp76YLfRZa+Bpgae7z/U21LExYjoI1XazAEDipB+fG3+k=" >> ~/.ssh/known_hosts
+          echo "[213.130.145.99]:65002 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILqWRRRlOpl5XsGDrWPcPFdn+VG3oBJNX+66Fjg2EVJ6" >> ~/.ssh/known_hosts
 
       - name: Test SSH connection
         env:
