@@ -12,14 +12,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Sync files to server
+      - name: Create .ssh directory
+        run: mkdir -p ~/.ssh
+
+      - name: Add private key
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+
+      - name: Set permissions on private key
+        run: chmod 600 ~/.ssh/id_rsa
+
+      - name: Add host to known_hosts
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+        run: ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
+
+      - name: Sync files to server
+        env:
           SSH_HOST: ${{ secrets.SSH_HOST }}
           SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan $SSH_HOST >> ~/.ssh/known_hosts
-          rsync -avz --delete --exclude '.git' ./ $SSH_USERNAME@$SSH_HOST:/home/u923706777/public_html
+        run: rsync -avz --delete --exclude '.git' ./ $SSH_USERNAME@$SSH_HOST:/home/u923706777/public_html
